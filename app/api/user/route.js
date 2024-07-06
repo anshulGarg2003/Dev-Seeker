@@ -1,29 +1,18 @@
-import User from "@/database/model/user";
-import connectDB from "@/database/mongoose";
-import { NextResponse } from "next/server";
+import NewUser from "@/database/model/user2";
+import connectToDatabase from "@/database/mongoose";
 
-export async function POST(request) {
-  const { name, email } = await request.json();
-  await connectDB();
+export default async function GET(req, res) {
+  const { user } = req.query;
 
-  const existingUsername = await User.findOne({ $or: [{ name }] });
-  const existingUseremail = await User.findOne({ $or: [{ email }] });
+  await connectToDatabase();
 
-  if (existingUsername) {
-    return NextResponse.json("Username already exists");
-  }
-  if (existingUseremail) {
-    return NextResponse.json("Email already exists");
-  }
-
-  const newUser = new User({
-    name,
-    email,
-  });
   try {
-    const savedUser = await newUser.save();
-    return NextResponse.json({ message: "Added successfully" });
-  } catch (err) {
-    res.status(500).json(err);
+    const userDetails = await NewUser.findById(user);
+    if (!userDetails) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json(userDetails);
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching user details" });
   }
 }

@@ -1,0 +1,101 @@
+const mongoose = require("mongoose");
+
+const friendSchema = new mongoose.Schema(
+  {
+    friendId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    friendname: {
+      type: String,
+      required: true,
+    },
+    friendimage: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
+const NewUserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+    },
+    github: {
+      type: String,
+    },
+    friends: [friendSchema],
+    bio: {
+      type: String,
+    },
+    country: {
+      type: String,
+    },
+    role: {
+      type: String,
+    },
+    institute: {
+      type: String,
+    },
+    tags: {
+      type: String,
+    },
+    rating: {
+      type: Number,
+      default: 5,
+    },
+    totaltime: {
+      type: Number,
+      default: 0,
+    },
+    totalcoins: {
+      type: Number,
+      default: 100,
+    },
+    transaction: [
+      {
+        status: {
+          type: Number,
+          required: true,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        time: {
+          type: String,
+          required: true,
+        },
+        remaincoins: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    rooms: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "NewRoom", // Ensure this references the NewRoom model
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const NewUser =
+  mongoose.models.NewUser || mongoose.model("NewUser", NewUserSchema);
+
+module.exports = NewUser;

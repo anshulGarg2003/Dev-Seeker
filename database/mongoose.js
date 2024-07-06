@@ -1,16 +1,48 @@
 const mongoose = require("mongoose");
 
-const uri = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI;
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(uri);
-    console.log("MongoDB connected successfully");
-    return "Connected...";
-  } catch (err) {
-    console.error("Failed to connect to MongoDB", err);
-    process.exit(1);
+// if (!MONGO_URI) {
+//   throw new Error(
+//     "Please define the MONGO_URI environment variable inside .env.local"
+//   );
+// }
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function connectToDatabase() {
+  if (cached.conn) {
+    console.log("Using cached connection.");
+    return cached.conn;
   }
-};
 
-module.exports = connectDB;
+  if (!cached.promise) {
+    console.log("Creating new connection promise.");
+    cached.promise = mongoose
+      .connect(MONGO_URI)
+      .then((mongoose) => {
+        console.log("New connection established.");
+        return mongoose;
+      })
+      .catch((err) => {
+        console.error("Mongoose connection error:", err);
+        throw err;
+      });
+  } else {
+    console.log("Awaiting existing connection promise.");
+  }
+
+  try {
+    cached.conn = await cached.promise;
+    return cached.conn;
+  } catch (err) {
+    console.error("Error awaiting mongoose connection:", err);
+    throw err;
+  }
+}
+
+module.exports = connectToDatabase;

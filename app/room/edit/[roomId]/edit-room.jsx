@@ -15,8 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { CreateRoomAction } from "./actions";
-
+import { EditRoomAction } from "./action";
 // Define form validation schema
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -33,29 +32,29 @@ const formSchema = z.object({
   }),
 });
 
-export function ProfileForm() {
+export function EditRoom({ roomInfo }) {
   const router = useRouter();
 
   // Initialize useForm with zodResolver and defaultValues
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      language: "",
-      githubrepo: "",
+      name: roomInfo?.name,
+      description: roomInfo?.description,
+      language: roomInfo?.language,
+      githubrepo: roomInfo?.githubrepo,
     },
   });
 
   // Define a submit handler
   async function onSubmit(values) {
-    await CreateRoomAction(values); // Placeholder for actual form submission action
-    router.push("/browse"); // Redirect after form submission
+    await EditRoomAction({ roomId: roomInfo._id, ...values }); // Placeholder for actual form submission action
+    // router.push("/browse"); // Redirect after form submission
   }
 
   // Render the ProfileForm component
   return (
-    <div className="">
+    <div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -69,7 +68,7 @@ export function ProfileForm() {
               <FormItem>
                 <FormLabel>Room name</FormLabel>
                 <FormControl>
-                  <Input {...field} maxLength={25} />
+                  <Input {...field} />
                 </FormControl>
                 <FormDescription>
                   This is the Room name publicly display.

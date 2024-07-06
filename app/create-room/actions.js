@@ -1,8 +1,10 @@
 "use server";
-import Room from "@/database/model/room";
-import User from "@/database/model/user"; // Ensure the correct import path
-import connectDB from "@/database/mongoose";
+import NewRoom from "@/database/model/room2";
 import { getSession } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
+import mongoose from "mongoose"; // Import mongoose to use ObjectId
+import connectToDatabase from "@/database/mongoose";
+import NewUser from "@/database/model/user2";
 
 export async function CreateRoomAction({
   name,
@@ -13,25 +15,56 @@ export async function CreateRoomAction({
   console.log({ name, description, language, githubrepo });
   const session = await getSession();
   if (session) {
-    await connectDB();
+    await connectToDatabase();
 
-    const newRoom = await Room.create({
+    // Convert userId to ObjectId
+    const userId = new mongoose.Types.ObjectId(session.user.id);
+
+    let existingUser = await NewUser.findById(userId);
+
+    if (!existingUser) {
+      throw new Error("User not found");
+      return;
+    }
+
+    if (existingUser.totalcoins < parseInt(process.env.ROOM_CREATE_COINS, 10)) {
+      throw new Error("You don't have sufficient Coins.");
+      return;
+    }
+
+    const newRoom = await NewRoom.create({
       name,
       description,
       language,
       githubrepo,
-      userId: session.user.id,
+      userId: userId,
+      userName: session.user.name,
+      userProfile: session.user.image,
     });
+    const savedroom = await newRoom.save();
+    const savedRoomId = new mongoose.Types.ObjectId(savedroom._id);
 
-    let existingUser = await User.findById(session.user.id);
-    if (existingUser) {
-      existingUser.rooms.push(newRoom._id);
-      await existingUser.save();
-    } else {
-      return "User not found";
+    console.log(savedRoomId);
+
+    existingUser.rooms.push(savedRoomId);
+
+    existingUser.totalcoins -= parseInt(process.env.ROOM_CREATE_COINS, 10);
+    const newTransaction = {
+      status: 300,
+      name: name.trim().substring(0, 10),
+      time: new Date().toLocaleDateString("en-GB"),
+      remaincoins: existingUser.totalcoins,
+    };
+
+    existingUser.transaction.unshift(newTransaction);
+
+    if (existingUser.transaction.length > 10) {
+      existingUser.transaction.shift();
     }
 
-    return "Room has been created";
+    await existingUser.save();
+
+    revalidatePath("/browse");
   } else {
     return "Please login first";
   }
