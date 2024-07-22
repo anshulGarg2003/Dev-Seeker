@@ -12,7 +12,7 @@ export async function CreateRoomAction({
   language,
   githubrepo,
 }) {
-  console.log({ name, description, language, githubrepo });
+  // console.log({ name, description, language, githubrepo });
   const session = await getSession();
   if (session) {
     await connectToDatabase();

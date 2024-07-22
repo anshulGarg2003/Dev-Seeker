@@ -1,8 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import "react-loading-skeleton/dist/skeleton.css";
-
 import { SearchBar } from "./SearchBar";
 import { RoomCard } from "@/components/RoomCard";
 import CreateRoomButton from "@/components/Create-Form-Button";

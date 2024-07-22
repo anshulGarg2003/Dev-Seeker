@@ -1,7 +1,6 @@
 "use server";
 import NewRoom from "@/database/model/room2";
 import { getSession } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
 import connectToDatabase from "@/database/mongoose";
 import { redirect } from "next/navigation";
 

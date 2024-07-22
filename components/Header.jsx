@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogIn, LogOutIcon } from "lucide-react";
+import { Coins, LogIn, LogOutIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import Image from "next/image";
@@ -49,6 +49,9 @@ function AcountDropDown() {
         <DropdownMenuItem>
           <Link href={"/user/room"}>Your Rooms</Link>
         </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={"/friends"}>Your Friends</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
           <LogOutIcon />
@@ -62,12 +65,13 @@ function AcountDropDown() {
 
 const Header = () => {
   const session = useSession();
+
   return (
     <>
       <header className="container mx-auto bg-gray-200 dark:bg-gray-800 z-10 relative">
         <div className=" py-3 items-center flex justify-between">
           <Link
-            href="/"
+            href="/browse"
             className="flex text-xl gap-1 justify-center items-center"
           >
             <Image src="/icon.png" alt="logo" width={50} height={50} />
@@ -76,7 +80,15 @@ const Header = () => {
 
           <div className="flex gap-4 justify-center items-center">
             {session.data ? (
-              <AcountDropDown />
+              <div className="flex items-center gap-2 ">
+                {/* <div className="flex items-center border border-gray-700 rounded-lg">
+                  <div className="p-2 bg-gray-700  rounded-l-lg">
+                    <Coins />
+                  </div>
+                  <div className="p-2">{session.data.user.coins}</div>
+                </div> */}
+                <AcountDropDown />
+              </div>
             ) : (
               <p
                 onClick={() => signIn("google")}

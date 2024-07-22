@@ -19,8 +19,6 @@ import { UpdateUser } from "./actions";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
-import { animals } from "./data";
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -114,7 +112,7 @@ export function EditProfile({ profileInfo }) {
             </p>
           </div>
 
-          <div className="flex w-full justify-between">
+          <div className="flex w-full justify-between gap-4">
             <FormField
               control={form.control}
               name="email"
@@ -122,7 +120,7 @@ export function EditProfile({ profileInfo }) {
                 <FormItem>
                   <FormLabel>E-mail</FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-[575px]" />
+                    <Input {...field} className="w-[500px]" />
                   </FormControl>
                   <FormDescription>
                     This is your public display name.
@@ -139,7 +137,7 @@ export function EditProfile({ profileInfo }) {
                 <FormItem>
                   <FormLabel>Github</FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-[575px]" />
+                    <Input {...field} className="w-[500px]" />
                   </FormControl>
                   <FormDescription>Github Profile Address</FormDescription>
                   <FormMessage />
@@ -187,18 +185,7 @@ export function EditProfile({ profileInfo }) {
               <FormItem>
                 <FormLabel>Country</FormLabel>
                 <FormControl>
-                  <Autocomplete
-                    defaultItems={animals}
-                    label="Favorite Animal"
-                    placeholder="Search an animal"
-                    className="max-w-xs"
-                  >
-                    {(animal) => (
-                      <AutocompleteItem key={animal.value}>
-                        {animal.label}
-                      </AutocompleteItem>
-                    )}
-                  </Autocomplete>
+                  <Input {...field} className="text-center" />
                 </FormControl>
                 <FormDescription>Enter your Country </FormDescription>
                 <FormMessage />
@@ -206,7 +193,7 @@ export function EditProfile({ profileInfo }) {
             )}
           />
 
-          <div className="flex justify-around w-full">
+          <div className="flex justify-between w-full gap-4">
             <FormField
               control={form.control}
               name="role"
@@ -215,7 +202,7 @@ export function EditProfile({ profileInfo }) {
                 <FormItem>
                   <FormLabel>Sutdent/Professional:</FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-[575px]" />
+                    <Input {...field} className="w-[500px]" />
                   </FormControl>
                   <FormDescription>Describe your role</FormDescription>
                   <FormMessage />
@@ -230,7 +217,7 @@ export function EditProfile({ profileInfo }) {
                 <FormItem>
                   <FormLabel>Institute</FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-[575px]" />
+                    <Input {...field} className="w-[500px]" />
                   </FormControl>
                   <FormDescription>
                     Enter your university if a student or company if a

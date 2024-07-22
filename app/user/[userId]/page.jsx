@@ -7,6 +7,7 @@ import { CardBody, CardContainer, CardItem } from "@/components/3d-card";
 import Link from "next/link";
 import {
   Coins,
+  CoinsIcon,
   Github,
   HomeIcon,
   PencilIcon,
@@ -27,7 +28,8 @@ import {
 } from "@nextui-org/card";
 
 import coins from "@/coins.json";
-import { GiTwoCoins } from "react-icons/gi";
+import { sendFriendsRequest } from "./actions";
+import toast from "react-hot-toast";
 
 const dummy = "nextjs,reactjs,mongodb,nextauth,c++,testing,ui/ux,backend";
 
@@ -56,6 +58,8 @@ const UserProfile = (props) => {
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [friendTag, setFriendTag] = useState("Send Friend Request");
 
   useEffect(() => {
     let isMounted = true; // Flag to track if component is mounted
@@ -89,7 +93,49 @@ const UserProfile = (props) => {
     return () => {
       isMounted = false; // Set flag to false when component unmounts
     };
-  }, [userId]);
+  }, [userId, requestLoading]);
+
+  const handleFriendRequest = async () => {
+    setRequestLoading(true);
+    const res = await sendFriendsRequest(userDetails);
+    setRequestLoading(false);
+    if (res == true) {
+      toast.success("Request has been send");
+    } else toast.success("Request has send Already");
+  };
+
+  useEffect(() => {
+    const handleFriendFunc = () => {
+      const userIdToCheck = session?.data?.user?.id;
+
+      // Check if the userIdToCheck is in userDetails.friends
+      const isInFriends = userDetails?.friends.some(
+        (friend) => friend.friendId.toString() === userIdToCheck
+      );
+      if (isInFriends) {
+        setFriendTag("Already a friend");
+        return;
+      }
+
+      // Check if the userIdToCheck is in userDetails.friendsRequests
+      const isInFriendsRequests = userDetails?.friendsRequests.some(
+        (request) => request.friendId.toString() === userIdToCheck
+      );
+      if (isInFriendsRequests) {
+        setFriendTag("Request already sent");
+        return;
+      }
+      const isInFriendsRequestsSend = userDetails?.friendsRequestSend.some(
+        (request) => request.friendId.toString() === userIdToCheck
+      );
+      if (isInFriendsRequestsSend) {
+        setFriendTag("Request received");
+        return;
+      }
+    };
+
+    handleFriendFunc();
+  }, [userDetails, session]);
 
   if (loading)
     return (
@@ -146,13 +192,14 @@ const UserProfile = (props) => {
                   {userDetails.github || "GithubLink"}
                   <p>{"→"}</p>
                 </CardItem>
-                {userId !== session?.data?.user?.userId && (
+                {userDetails._id !== session?.data?.user?.id && (
                   <CardItem
                     translateZ={20}
                     as="button"
                     className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
+                    onClick={handleFriendRequest}
                   >
-                    Add Friend
+                    {requestLoading === true ? "Sending..." : friendTag}
                   </CardItem>
                 )}
               </div>
@@ -221,8 +268,8 @@ const UserProfile = (props) => {
                 </div>
               </div>
               <div className="flex gap-2">
-                {userDetails.totalcoins || 100}
-                <GiTwoCoins />
+                {userDetails.totalcoins}
+                <CoinsIcon />
               </div>
             </CardHeader>
             <BottomCardBody className="bg-gray-800 min-h-5">
@@ -236,20 +283,24 @@ const UserProfile = (props) => {
                         <p className="text-green-600">
                           {statement.name}... Room DELETE
                         </p>
+                      ) : statement.status == 210 ? (
+                        <p className="text-green-600">
+                          {statement.name} Room SOLVE
+                        </p>
                       ) : statement.status == 300 ? (
                         <p className="text-red-600">
                           {statement.name} Room CREATE
                         </p>
                       ) : (
                         <p className="text-red-600">
-                          {statement.name} Room DISTRUBz
+                          {statement.name} Room DISTRUB
                         </p>
                       )}
                       <p className="text-gray-500 text-sm">{statement.time}</p>
                     </div>
                     <p className="flex gap-2">
                       {statement.remaincoins}
-                      <GiTwoCoins />
+                      <CoinsIcon />
                     </p>
                   </div>
                 ))

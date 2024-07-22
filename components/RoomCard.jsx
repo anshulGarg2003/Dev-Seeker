@@ -15,8 +15,6 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Lottie from "lottie-react";
 import Live from "@/Live.json";
-import { io } from "socket.io-client";
-import { useEffect, useState } from "react";
 
 export function RoomCard({ roomInfo }) {
   return (

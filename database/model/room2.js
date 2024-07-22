@@ -40,7 +40,6 @@ const NewRoomSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Pre middleware to handle the removal of room reference from the user document
 const NewRoom =
   mongoose.models.NewRoom || mongoose.model("NewRoom", NewRoomSchema);
 

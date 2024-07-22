@@ -36,6 +36,8 @@ const NewUserSchema = new mongoose.Schema(
       type: String,
     },
     friends: [friendSchema],
+    friendsRequests: [friendSchema],
+    friendsRequestSend: [friendSchema],
     bio: {
       type: String,
     },

@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <NextTopLoader />
         <Providers>
-          <Toaster position="bottom-right" />
+          <Toaster />
           <Header />
           {children}
         </Providers>

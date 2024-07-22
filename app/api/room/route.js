@@ -4,7 +4,6 @@ import connectToDatabase from "@/database/mongoose";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  console.log("Hello");
   await connectToDatabase();
   try {
     const rooms = await NewRoom.find({});

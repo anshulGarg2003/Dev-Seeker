@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import VideoCall from "./VideoPlayer";
 import { splitTags } from "@/lib/utils";
 import { OnAir } from "./action";
-import Trial from "./Trial";
 
 const Page = (props) => {
   const [room, setRoom] = useState(null); // Initialize room state with null
@@ -93,7 +92,7 @@ const Page = (props) => {
           <VideoCall roomInfo={roomId} />
         </div>
         <div className="col-span-1 p-4 pl-2">
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-4 flex flex-col gap-4">
+          <div className="rounded-lg bg-card p-4 flex flex-col gap-4">
             {!loading && ( // Ensure room is loaded before accessing its properties
               <>
                 <h1 className="text-base">{room.name}</h1>
