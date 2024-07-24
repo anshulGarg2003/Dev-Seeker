@@ -73,12 +73,7 @@ export function MyRoomCard({ roomInfo, onDelete, loading }) {
             <Lottie animationData={Live} />
           </div>
         )}
-        <Link
-          href={`/room/edit/${roomInfo._id}`}
-          className="top-2 right-2 absolute hover:underline"
-        >
-          <PencilIcon />
-        </Link>
+
         <CardTitle>
           {loading ? <Skeleton highlightColor="black" /> : roomInfo.name}
         </CardTitle>
@@ -119,28 +114,6 @@ export function MyRoomCard({ roomInfo, onDelete, loading }) {
             {"Join Room"}
           </Link>
         </Button>
-        {loading == false && (
-          <AlertDialog>
-            <AlertDialogTrigger>
-              <Button variant={"destructive"}>
-                <Trash2Icon />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This room has not been solved yet. Do you really want to
-                  delete this room?
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>No</AlertDialogCancel>
-                <AlertDialogAction onClick={onDelete}>Yes</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
       </CardFooter>
       <CardFooter>
         {loading ? (

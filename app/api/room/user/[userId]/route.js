@@ -7,7 +7,6 @@ export async function GET(req, { params }) {
 
   const { userId } = params;
   console.log(userId);
-
   try {
     const rooms = await NewRoom.find({ userId: userId });
     return NextResponse.json(rooms, { status: 200 });

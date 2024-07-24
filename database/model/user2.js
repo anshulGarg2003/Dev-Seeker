@@ -19,6 +19,31 @@ const friendSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const notificationSchema = new mongoose.Schema(
+  {
+    code: {
+      type: Number,
+      required: true,
+    },
+    sendBy: {
+      type: String,
+      required: true,
+    },
+    data: {
+      type: String,
+    },
+    usefulId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    isSeen: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
+
 const NewUserSchema = new mongoose.Schema(
   {
     name: {
@@ -38,6 +63,7 @@ const NewUserSchema = new mongoose.Schema(
     friends: [friendSchema],
     friendsRequests: [friendSchema],
     friendsRequestSend: [friendSchema],
+    notification: [notificationSchema],
     bio: {
       type: String,
     },

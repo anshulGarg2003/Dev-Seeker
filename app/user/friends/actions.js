@@ -104,9 +104,44 @@ export const Decline = async (item) => {
     user.friendsRequests = user.friendsRequests.filter(
       (request) => !request.friendId.equals(item.friendId)
     );
-    console.log(user);
+    // console.log(user);
     await user.save();
-    // await userItem.save();
+    revalidatePath("/friends");
+    return true;
+  } catch (error) {
+    console.error("Error in Declining the request", error);
+    return false;
+  }
+};
+
+export const RemoveRequest = async (item) => {
+  const session = await getSession();
+  if (!session) {
+    throw new Error("Your session has expired");
+  }
+
+  const userId = session?.user?.id;
+  await connectToDatabase();
+
+  console.log(item);
+
+  try {
+    const user = await NewUser.findById(userId);
+    const userItem = await NewUser.findById(item.friendId);
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Filter out the accepted friend request
+    user.friendsRequestSend = user.friendsRequestSend.filter(
+      (request) => !request.friendId.equals(item.friendId)
+    );
+
+    userItem.friendsRequests = userItem.friendsRequests.filter(
+      (request) => !request.friendId.equals(userId)
+    );
+    await user.save();
+    await userItem.save();
     revalidatePath("/friends");
     return true;
   } catch (error) {

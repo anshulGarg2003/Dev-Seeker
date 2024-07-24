@@ -9,6 +9,7 @@ export const CallProvider = ({ children }) => {
   const [callSession, setCallSession] = useState(null);
   const [roomCreator, setRoomCreator] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
+  const [headerRefresh, setHeaderRefresh] = useState(true);
 
   return (
     <CallContext.Provider
@@ -21,6 +22,8 @@ export const CallProvider = ({ children }) => {
         setRoomCreator,
         userDetails,
         setUserDetails,
+        headerRefresh,
+        setHeaderRefresh,
       }}
     >
       {children}

@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { CreateRoomAction } from "./actions";
+import { useCallContext } from "@/context/CallContext";
 
 // Define form validation schema
 const formSchema = z.object({
@@ -35,7 +36,7 @@ const formSchema = z.object({
 
 export function ProfileForm() {
   const router = useRouter();
-
+  const { setHeaderRefresh } = useCallContext();
   // Initialize useForm with zodResolver and defaultValues
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -50,6 +51,7 @@ export function ProfileForm() {
   // Define a submit handler
   async function onSubmit(values) {
     await CreateRoomAction(values); // Placeholder for actual form submission action
+    setHeaderRefresh((prev) => !prev);
     router.push("/browse"); // Redirect after form submission
   }
 

@@ -56,11 +56,41 @@ export async function CreateRoomAction({
       remaincoins: existingUser.totalcoins,
     };
 
+    if (existingUser.transaction.length >= 10) {
+      existingUser.transaction.pop();
+      // console.log("Removed the oldest transaction", existingUser.transaction);
+    }
     existingUser.transaction.unshift(newTransaction);
 
-    if (existingUser.transaction.length > 10) {
-      existingUser.transaction.shift();
-    }
+    const newNotify = {
+      code: 3,
+      sendBy: session.user.name,
+      data: name,
+      usefulId: session.user.id,
+    };
+
+    existingUser.notification.unshift(newNotify);
+
+    const notify = {
+      code: 1,
+      sendBy: session.user.name,
+      data: name,
+      usefulId: session.user.id,
+    };
+
+    const friendsUpdatePromises = existingUser.friends.map(async (friend) => {
+      await NewUser.findByIdAndUpdate(friend.friendId, {
+        $push: {
+          notification: {
+            $each: [notify],
+            $position: 0, // Push to the top of the array
+          },
+        },
+      });
+    });
+
+    // Wait for all promises to resolve
+    await Promise.all(friendsUpdatePromises);
 
     await existingUser.save();
 

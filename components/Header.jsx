@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./toggleButton";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -18,6 +18,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Lottie from "lottie-react";
+import Bell from "@/Bell.json";
+import { useCallContext } from "@/context/CallContext";
 
 function AcountDropDown() {
   const router = useRouter();
@@ -50,7 +53,7 @@ function AcountDropDown() {
           <Link href={"/user/room"}>Your Rooms</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href={"/friends"}>Your Friends</Link>
+          <Link href={"/user/friends"}>Your Friends</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
@@ -65,11 +68,57 @@ function AcountDropDown() {
 
 const Header = () => {
   const session = useSession();
+  const [userDetails, setUserDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [newNotification, setNewNotification] = useState([]);
+  const { headerRefresh } = useCallContext();
+  useEffect(() => {
+    let isMounted = true; // Flag to track if component is mounted
+
+    const fetchUserDetails = async () => {
+      try {
+        const response = await fetch(`/api/user/${session?.data?.user?.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (isMounted) {
+            // Check if component is still mounted before updating state
+            setUserDetails(data);
+          }
+        } else {
+          setError("Failed to fetch user details");
+        }
+      } catch (error) {
+        console.log("Error fetching user details");
+      } finally {
+        if (isMounted) {
+          // Update loading state only if component is still mounted
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchUserDetails();
+
+    // Cleanup function to handle unmounting
+    return () => {
+      isMounted = false; // Set flag to false when component unmounts
+    };
+  }, [session, headerRefresh]);
+
+  useEffect(() => {
+    if (userDetails?.notification) {
+      setNewNotification(
+        userDetails.notification.filter((item) => item.isSeen === false)
+      );
+    } else {
+      setNewNotification([]); // Ensure newNotification is always an array
+    }
+  }, [userDetails]);
 
   return (
     <>
-      <header className="container mx-auto bg-gray-200 dark:bg-gray-800 z-10 relative">
-        <div className=" py-3 items-center flex justify-between">
+      <header className=" mx-auto bg-gray-200 dark:bg-gray-800 z-10 relative">
+        <div className=" container py-3 items-center flex justify-between">
           <Link
             href="/browse"
             className="flex text-xl gap-1 justify-center items-center"
@@ -78,15 +127,31 @@ const Header = () => {
             Dev-Seeker
           </Link>
 
-          <div className="flex gap-4 justify-center items-center">
+          <div className="flex justify-center gap-4 items-center">
             {session.data ? (
-              <div className="flex items-center gap-2 ">
-                {/* <div className="flex items-center border border-gray-700 rounded-lg">
-                  <div className="p-2 bg-gray-700  rounded-l-lg">
-                    <Coins />
+              <div className="flex items-center justify-between">
+                {loading === false && (
+                  <div className="flex gap-4">
+                    <div className="flex items-center border border-gray-700 rounded-lg">
+                      <div className="p-2 px-5 bg-gray-700  rounded-l-lg">
+                        <Coins />
+                      </div>
+                      <div className="p-2 px-5">{userDetails.totalcoins}</div>
+                    </div>
+                    <div>
+                      <Link href={"/user/notification"}>
+                        {newNotification.length > 0 && (
+                          <div className="bg-red-500 w-[10px] absolute right-[16rem] h-[10px] rounded-lg"></div>
+                        )}
+                        <Lottie
+                          animationData={Bell}
+                          loop={newNotification.length > 0}
+                          className="w-[40px] h-[40px]"
+                        />
+                      </Link>
+                    </div>
                   </div>
-                  <div className="p-2">{session.data.user.coins}</div>
-                </div> */}
+                )}
                 <AcountDropDown />
               </div>
             ) : (

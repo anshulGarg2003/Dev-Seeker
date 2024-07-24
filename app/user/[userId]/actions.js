@@ -47,6 +47,14 @@ export const sendFriendsRequest = async (userDetails) => {
       friendimage: userDetails.image,
     };
 
+    const notify = {
+      code: 2,
+      sendBy: session?.user?.name,
+      data: "Friend",
+      usefulId: session?.user?.id,
+    };
+
+    sendToUser.notification.unshift(notify);
     sendToUser.friendsRequests.push(sendTofriend);
     sendByUser.friendsRequestSend.push(sendByfriend);
 

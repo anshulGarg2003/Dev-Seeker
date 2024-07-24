@@ -18,7 +18,9 @@ import Image from "next/image";
 import { UpdateUser } from "./actions";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -49,7 +51,7 @@ const formSchema = z.object({
 });
 
 export function EditProfile({ profileInfo }) {
-  console.log(profileInfo);
+  const router=useRouter()
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,7 +74,7 @@ export function EditProfile({ profileInfo }) {
     await UpdateUser(values);
 
     toast.success("Details Update Successfully ");
-    redirect(`/user/${session.data.user.userId}`);
+    router.push(`/user/${session.data.user.userId}`);
   }
 
   // Render the ProfileForm component

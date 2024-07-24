@@ -30,7 +30,8 @@ export default function VideoCall({ roomInfo }) {
   const [callData, setCallData] = useState({});
   const [callStatus, setCallStatus] = useState();
   const [totalCount, setTotalCount] = useState(0);
-  const { setRoomCreator, setCallSession, setRoomInfo } = useCallContext();
+  const { setRoomCreator, setCallSession, setRoomInfo, setHeaderRefresh } =
+    useCallContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -103,6 +104,7 @@ export default function VideoCall({ roomInfo }) {
                     setRoomCreator(CreatorId);
                     setCallSession(totalMin);
                     setRoomInfo(roomInfo);
+                    setHeaderRefresh((prev) => !prev);
                     router.push("/feedback");
                   }}
                 />

@@ -38,10 +38,10 @@ export async function GET(request, { params }) {
 
 // DELETE request handler
 export async function DELETE(request, { params }) {
-  await connectDB(); // Ensure database connection
+  await connectToDatabase(); // Ensure database connection
 
   const { roomId } = params;
-
+  console.log("Hello");
   try {
     const roomToDelete = await NewRoom.findById(roomId);
 
@@ -49,7 +49,6 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: "Room not found" }, { status: 404 });
     }
     const user = await NewUser.findById(roomToDelete.userId);
-    console.log(user);
 
     if (user) {
       user.rooms.pull(roomToDelete._id);
@@ -61,12 +60,23 @@ export async function DELETE(request, { params }) {
         time: new Date().toLocaleDateString("en-GB"),
         remaincoins: user.totalcoins,
       };
-      user.transaction.unshift(newTransaction);
 
-      if (user.transaction.length > 10) {
-        user.transaction.shift();
+      if (user.transaction.length >= 10) {
+        user.transaction.pop();
+        // console.log("Removed the oldest transaction", user.transaction);
       }
 
+      user.transaction.unshift(newTransaction);
+
+      const newNotify = {
+        code: 4,
+        sendBy: user.name,
+        data: roomToDelete.name,
+        usefulId: user._id,
+      };
+
+      user.notification.unshift(newNotify);
+      // console.log(user);
       await user.save();
     }
 

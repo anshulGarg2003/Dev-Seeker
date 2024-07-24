@@ -11,7 +11,6 @@ import { sendFeedback } from "./actions";
 import StarRating from "./StarRating";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { CheckboxItem } from "@radix-ui/react-dropdown-menu";
 
 const Page = () => {
   const { roomInfo, callSession, roomCreator } = useCallContext();

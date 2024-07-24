@@ -1,3 +1,4 @@
+"use server";
 import NewUser from "@/database/model/user2";
 import connectToDatabase from "@/database/mongoose";
 import { NextResponse } from "next/server";

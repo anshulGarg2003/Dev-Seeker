@@ -2,21 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { MyRoomCard } from "./MyRoomCard";
-import toast from "react-hot-toast";
-import { DeleteRoom } from "./action";
-import CreateRoomButton from "@/components/Create-Form-Button";
 import Lottie from "lottie-react";
 import Loading from "@/Loading.json";
 import Image from "next/image";
-import { useCallContext } from "@/context/CallContext";
 
-const page = () => {
-  const session = useSession();
-  const userId = session.data?.user?.id;
+const Page = (props) => {
+  const userId = props.params.userId;
+  console.log(userId);
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refresh, setRefresh] = useState(false);
-  const { setHeaderRefresh } = useCallContext();
 
   useEffect(() => {
     const fetchRoom = async () => {
@@ -26,8 +20,8 @@ const page = () => {
         if (response.ok) {
           const data = await response.json();
           setRooms(data);
-          setLoading(false);
           console.log(data);
+          setLoading(false);
         } else {
           console.error("Failed to fetch room");
           setLoading(false);
@@ -39,16 +33,7 @@ const page = () => {
     };
 
     fetchRoom();
-  }, [userId, refresh]);
-
-  const handleRoomDelete = async (roomId) => {
-    const res = await DeleteRoom(roomId);
-    if (res) {
-      setRefresh((prev) => !prev);
-      setHeaderRefresh((prev) => !prev);
-      toast.success("Delete Sucessfully");
-    }
-  };
+  }, [userId]);
 
   return (
     <div className="min-h-screen p-14 gap-4 flex flex-col items-center">
@@ -57,23 +42,20 @@ const page = () => {
           <Lottie animationData={Loading} />
         </div>
       ) : (
-        <div className="flex flex-col gap-4 w-[80%]">
-          <p className="text-gray-500 text-[60px]">Your Rooms</p>
-          {rooms.length == 0 ? (
+        <div className="flex flex-col gap-4">
+          <p className="text-gray-500 text-[60px] text-center">Rooms</p>
+          {rooms.length === 0 ? (
             <div className="flex items-center flex-col gap-4">
               <Image src={"/empty.svg"} width="300" height="300" alt="Empty" />
-              <p>You haven't create any room.</p>
-              <CreateRoomButton />
+              <p>No room is Created.</p>
             </div>
           ) : (
             <>
-              <CreateRoomButton />
               <div className="grid grid-cols-3 gap-4">
                 {rooms.map((room) => (
                   <MyRoomCard
                     key={room._id}
                     roomInfo={room}
-                    onDelete={() => handleRoomDelete(room)}
                     loading={loading} // Pass delete handler
                   />
                 ))}
@@ -86,4 +68,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
