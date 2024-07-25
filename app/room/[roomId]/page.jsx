@@ -41,7 +41,6 @@ const Page = (props) => {
     // Call OnAir with true when the component mounts
     const onAirTrue = async () => {
       try {
-        console.log("call for change");
         await OnAir(roomId, true);
       } catch (error) {
         console.error("Failed to call OnAir with true:", error);
@@ -55,7 +54,6 @@ const Page = (props) => {
       // Call OnAir with false when the component unmounts
       const onAirFalse = async () => {
         try {
-          console.log("call for change");
           await OnAir(roomId, false);
         } catch (error) {
           console.error("Failed to call OnAir with false:", error);
@@ -70,7 +68,6 @@ const Page = (props) => {
       event.preventDefault();
       event.returnValue = ""; // This line is necessary for the beforeunload event to trigger
       try {
-        console.log("call for change on page close");
         await OnAir(roomId, false);
       } catch (error) {
         console.error("Failed to call OnAir with false on page close:", error);

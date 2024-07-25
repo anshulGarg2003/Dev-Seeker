@@ -44,7 +44,6 @@ export const Accept = async (item) => {
   await connectToDatabase();
 
   try {
-    console.log("Hello");
     const user = await NewUser.findById(userId);
     const userItem = await NewUser.findById(item.friendId);
     if (!user || !userItem) {
@@ -123,7 +122,6 @@ export const RemoveRequest = async (item) => {
   const userId = session?.user?.id;
   await connectToDatabase();
 
-  console.log(item);
 
   try {
     const user = await NewUser.findById(userId);

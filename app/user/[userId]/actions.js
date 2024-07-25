@@ -12,7 +12,6 @@ export const sendFriendsRequest = async (userDetails) => {
     return;
   }
 
-  console.log(session);
 
   await connectToDatabase();
 

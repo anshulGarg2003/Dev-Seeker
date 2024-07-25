@@ -20,8 +20,8 @@ const FeedbackCarousel = ({ feedbackData }) => {
   const item = feedbackData[currentIndex];
 
   return (
-    <div className="py-10 flex justify-center items-center">
-      <div className="max-w-screen-md">
+    <div className="py-10 flex justify-center items-center min-h-[250px]">
+      <div className="max-w-screen-md w-[500px] text-center">
         <div className={`transition-opacity duration-1000 ease-in-out ${fade}`}>
           <div className="flex justify-center items-center mb-4 text-yellow-300">
             {Array.from({ length: item?.star }).map((_, i) => (

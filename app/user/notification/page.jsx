@@ -18,7 +18,6 @@ const page = () => {
     const fetchNotifications = async () => {
       try {
         const res = await fetchUserNotifications();
-        console.log(res);
         setLoading(false);
         if (res === false) {
           toast.error("Error in fetching data");
@@ -33,18 +32,30 @@ const page = () => {
   }, []);
 
   const handleView = async (item) => {
-    console.log("Function Started");
-    toast.promise(RemoveNotification(item), {
-      loading: "Processing...",
-      success: "Here we go..",
-    });
-    setHeaderRefresh((prev) => !prev);
-    if (item.code === 1) {
-      router.push(`/user/room/${item.usefulId}`);
-    } else if (item.code === 2) {
-      router.push(`/user/friends`);
-    } else {
-      router.push(`/user/${item.usefulId}`);
+    try {
+      // Use toast.promise correctly with the promise and the messages
+      await toast.promise(
+        RemoveNotification(item), // The promise
+        {
+          loading: "Processing...",
+          success: "Here we go..",
+          error: "Error processing",
+        }
+      );
+
+      // Update headerRefresh state after the promise is resolved
+      setHeaderRefresh((prev) => !prev);
+
+      // Redirect based on item code
+      if (item.code === 1) {
+        router.push(`/user/room/${item.usefulId}`);
+      } else if (item.code === 2) {
+        router.push(`/user/friends`);
+      } else {
+        router.push(`/user/${item.usefulId}`);
+      }
+    } catch (error) {
+      console.error("Error handling view:", error);
     }
   };
 

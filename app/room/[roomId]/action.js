@@ -18,7 +18,6 @@ export async function generateTokenAction() {
 }
 
 export async function AddCoin(roomInfo, callSession) {
-  console.log(callSession, roomInfo);
   const session = await getSession();
   if (!roomInfo) {
     return;

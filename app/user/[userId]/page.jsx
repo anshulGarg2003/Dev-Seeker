@@ -11,6 +11,7 @@ import {
   Github,
   HomeIcon,
   PencilIcon,
+  RemoveFormattingIcon,
   StarIcon,
   TimerIcon,
 } from "lucide-react";
@@ -72,7 +73,6 @@ const UserProfile = (props) => {
           if (isMounted) {
             // Check if component is still mounted before updating state
             setUserDetails(data);
-            console.log(data);
           }
         } else {
           setError("Failed to fetch user details");
@@ -148,9 +148,9 @@ const UserProfile = (props) => {
   return (
     <div>
       <main className="flex p-5">
-        <div className="flex">
+        <div className="flex w-[30%] ">
           <CardContainer className="inter-var">
-            <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border  ">
+            <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] h-auto rounded-xl p-6 border  ">
               <CardItem translateZ="100" className="w-full mb-4">
                 <Image
                   src={userDetails.image}
@@ -212,7 +212,7 @@ const UserProfile = (props) => {
               <PencilIcon className="absolute right-2 top-2" />
             </Link>
           )}
-          <div className="inter-var py-4 items-center justify-center w-full bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] h-auto rounded-xl p-6 border">
+          <div className="inter-var py-4 items-center justify-center w-full bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl p-6 border">
             <div className="w-full flex flex-col gap-4">
               <div className="px-4 py-4 rounded-xl bg-black dark:bg-white dark:text-black text-white flex text-lg gap-2 shadow-lg transition duration-300 hover:shadow-xl hover:border-fuchsia-800">
                 <div>Country:</div>
@@ -239,20 +239,29 @@ const UserProfile = (props) => {
                   <StarIcon />
                 </div>
               </div>
-              <div className="px-4 py-4 rounded-xl bg-black dark:bg-white dark:text-black text-white flex text-lg gap-2">
-                <div>Time Spend:</div>
-                <div className="font-bold flex items-center gap-2">
-                  {userDetails.totaltime || 0}
-                  <TimerIcon />
+              <div className="flex gap-4">
+                <div className="w-[50%] px-4 py-4 rounded-xl bg-black dark:bg-white dark:text-black text-white flex text-lg gap-2">
+                  <div>Time Spend:</div>
+                  <div className="font-bold flex items-center gap-2">
+                    {userDetails.totaltime.toFixed(2) || 0}
+                    <TimerIcon />
+                  </div>
+                </div>
+                <div className="w-[50%] px-4 py-4 rounded-xl bg-black dark:bg-white dark:text-black text-white flex text-lg gap-2">
+                  <div>Rooms Created:</div>
+                  <div className="font-bold flex items-center gap-2">
+                    {userDetails.rooms.length || 0}
+                    <RemoveFormattingIcon />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </main>
-      <main className="flex w-full gap-4">
+      <main className="flex w-[100%] gap-4 mb-10">
         <div
-          className="flex px-10"
+          className="flex w-[32%] pl-6 pr-2"
           style={{
             visibility:
               session?.data?.user?.id === userId ? "visible" : "hidden",
@@ -312,38 +321,37 @@ const UserProfile = (props) => {
             </CardFooter>
           </Card>
         </div>
-        <div className="flex flex-[2]">
-          <div className="flex flex-col rounded-md w-full pr-5">
-            <div className="p-6 bg-[#4B5563]">Friends</div>
+        <div className="flex flex-col gap-5 w-[100%] pr-[3.5rem]">
+          <div className="flex flex-col w-full  rounded-md">
+            <div className="flex justify-between rounded-t-md p-6 bg-[#4B5563]">
+              <p>Friends</p>
+              <p>{userDetails.friends.length}</p>
+            </div>
 
-            <div className="overflow-x-scroll flex gap-4 p-6 bg-gray-800">
-              <div className="flex rounded-[100px] border-[5px] ">
-                <Image
-                  src={userDetails.image}
-                  width="130"
-                  height="130"
-                  alt="friend"
-                  className="rounded-[100px]"
-                />
-              </div>
-              <div className="flex rounded-[100px] border-[5px] ">
-                <Image
-                  src={userDetails.image}
-                  width="130"
-                  height="130"
-                  alt="friend"
-                  className="rounded-[100px]"
-                />
-              </div>
-              <div className="flex rounded-[100px] border-[5px] ">
-                <Image
-                  src={userDetails.image}
-                  width="130"
-                  height="130"
-                  alt="friend"
-                  className="rounded-[100px]"
-                />
-              </div>
+            <div className=" flex items-center gap-4 p-6 bg-gray-800 rounded-b-md">
+              {userDetails.friends.slice(0, 5).map((item) => (
+                <Link href={`/user/${item.friendId}`}>
+                  <div className="flex items-center flex-col rounded-[100px] gap-2">
+                    <Image
+                      src={item.friendimage}
+                      width="120"
+                      height="120"
+                      alt="friend"
+                      className="rounded-[100px]"
+                    />
+                    <p>{item.friendname}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col w-full  rounded-md">
+            <div className="flex justify-between rounded-t-md p-6 bg-[#4B5563]">
+              <p>Blogs</p>
+            </div>
+
+            <div className=" flex gap-4 p-6 bg-gray-800 rounded-b-md">
+              <p>Stay tuned for more blogs</p>
             </div>
           </div>
         </div>

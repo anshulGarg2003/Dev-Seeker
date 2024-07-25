@@ -41,7 +41,6 @@ export async function DELETE(request, { params }) {
   await connectToDatabase(); // Ensure database connection
 
   const { roomId } = params;
-  console.log("Hello");
   try {
     const roomToDelete = await NewRoom.findById(roomId);
 

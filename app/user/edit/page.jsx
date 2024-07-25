@@ -22,7 +22,6 @@ const page = () => {
           const data = await response.json();
           if (isMounted) {
             setUserInfo(data);
-            console.log(data);
           }
         } else {
           setError("Failed to fetch user details");

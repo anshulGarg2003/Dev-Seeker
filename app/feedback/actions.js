@@ -6,8 +6,6 @@ import mongoose from "mongoose";
 import NewRoom from "@/database/model/room2";
 
 export const sendFeedback = async (feedback, star) => {
-  console.log(feedback, star);
-
   const session = await getSession();
   if (session) {
     await connectToDatabase();
@@ -29,7 +27,6 @@ export const sendFeedback = async (feedback, star) => {
 };
 
 export const sendComplete = async (roomInfo) => {
-  console.log(roomInfo);
   const session = await getSession();
   if (session) {
     await connectToDatabase();

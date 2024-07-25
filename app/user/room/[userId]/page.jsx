@@ -8,7 +8,6 @@ import Image from "next/image";
 
 const Page = (props) => {
   const userId = props.params.userId;
-  console.log(userId);
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +19,6 @@ const Page = (props) => {
         if (response.ok) {
           const data = await response.json();
           setRooms(data);
-          console.log(data);
           setLoading(false);
         } else {
           console.error("Failed to fetch room");
@@ -43,7 +41,9 @@ const Page = (props) => {
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <p className="text-gray-500 text-[60px] text-center">Rooms</p>
+          <p className="text-gray-500 text-[60px] text-center">
+            {rooms[0]?.userName}Rooms
+          </p>
           {rooms.length === 0 ? (
             <div className="flex items-center flex-col gap-4">
               <Image src={"/empty.svg"} width="300" height="300" alt="Empty" />

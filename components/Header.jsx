@@ -70,7 +70,6 @@ const Header = () => {
   const session = useSession();
   const [userDetails, setUserDetails] = useState({});
   const [loading, setLoading] = useState(true);
-  const [newNotification, setNewNotification] = useState([]);
   const { headerRefresh } = useCallContext();
   useEffect(() => {
     let isMounted = true; // Flag to track if component is mounted
@@ -105,20 +104,10 @@ const Header = () => {
     };
   }, [session, headerRefresh]);
 
-  useEffect(() => {
-    if (userDetails?.notification) {
-      setNewNotification(
-        userDetails.notification.filter((item) => item.isSeen === false)
-      );
-    } else {
-      setNewNotification([]); // Ensure newNotification is always an array
-    }
-  }, [userDetails]);
-
   return (
     <>
-      <header className=" mx-auto bg-gray-200 dark:bg-gray-800 z-10 relative">
-        <div className=" container py-3 items-center flex justify-between">
+      <header className="mx-auto bg-gray-200 dark:bg-gray-800 z-10 relative">
+        <div className="container py-3 items-center flex justify-between">
           <Link
             href="/browse"
             className="flex text-xl gap-1 justify-center items-center"
@@ -133,19 +122,22 @@ const Header = () => {
                 {loading === false && (
                   <div className="flex gap-4">
                     <div className="flex items-center border border-gray-700 rounded-lg">
-                      <div className="p-2 px-5 bg-gray-700  rounded-l-lg">
+                      <div className="p-2 px-5 bg-gray-700 rounded-l-lg">
                         <Coins />
                       </div>
                       <div className="p-2 px-5">{userDetails.totalcoins}</div>
                     </div>
-                    <div>
+                    <div className="relative">
                       <Link href={"/user/notification"}>
-                        {newNotification.length > 0 && (
-                          <div className="bg-red-500 w-[10px] absolute right-[16rem] h-[10px] rounded-lg"></div>
+                        {userDetails?.notification?.length > 0 && (
+                          <div className="bg-red-500 text-white text-xs font-bold w-[1.2rem] h-[1.2rem] flex items-center justify-center rounded-full absolute top-1 right-2 transform translate-x-1/2 -translate-y-1/2">
+                            {userDetails?.notification?.length}
+                          </div>
                         )}
+
                         <Lottie
                           animationData={Bell}
-                          loop={newNotification.length > 0}
+                          loop={userDetails?.notification?.length > 0}
                           className="w-[40px] h-[40px]"
                         />
                       </Link>

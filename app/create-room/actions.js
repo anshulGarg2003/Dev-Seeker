@@ -44,8 +44,6 @@ export async function CreateRoomAction({
     const savedroom = await newRoom.save();
     const savedRoomId = new mongoose.Types.ObjectId(savedroom._id);
 
-    console.log(savedRoomId);
-
     existingUser.rooms.push(savedRoomId);
 
     existingUser.totalcoins -= parseInt(process.env.ROOM_CREATE_COINS, 10);

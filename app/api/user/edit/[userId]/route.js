@@ -7,7 +7,6 @@ export async function GET(request, { params }) {
   const { userId } = params;
   try {
     const user = await NewUser.findById(userId);
-    console.log(user);
     // if (!user) {
     //   return NextResponse.json({ error: "User not found" }, { status: 404 });
     // }

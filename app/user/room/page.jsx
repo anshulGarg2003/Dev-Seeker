@@ -10,12 +10,12 @@ import Loading from "@/Loading.json";
 import Image from "next/image";
 import { useCallContext } from "@/context/CallContext";
 
-const page = () => {
+const Page = () => {
   const session = useSession();
   const userId = session.data?.user?.id;
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(true);
   const { setHeaderRefresh } = useCallContext();
 
   useEffect(() => {
@@ -27,7 +27,6 @@ const page = () => {
           const data = await response.json();
           setRooms(data);
           setLoading(false);
-          console.log(data);
         } else {
           console.error("Failed to fetch room");
           setLoading(false);
@@ -42,14 +41,14 @@ const page = () => {
   }, [userId, refresh]);
 
   const handleRoomDelete = async (roomId) => {
-    const res = await DeleteRoom(roomId);
-    if (res) {
-      setRefresh((prev) => !prev);
-      setHeaderRefresh((prev) => !prev);
-      toast.success("Delete Sucessfully");
-    }
+    await toast.promise(DeleteRoom(roomId), {
+      loading: "Deleting the room",
+      success: "Delete Successfully",
+      error: "Error while Deleting",
+    });
+    setRefresh((prev) => !prev);
+    setHeaderRefresh((prev) => !prev);
   };
-
   return (
     <div className="min-h-screen p-14 gap-4 flex flex-col items-center">
       {loading ? (
@@ -86,4 +85,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
